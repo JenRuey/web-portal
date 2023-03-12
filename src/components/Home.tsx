@@ -1,18 +1,19 @@
-import { useCallback, useEffect, useState } from "react";
-import { Outlet, useNavigate } from "react-router-dom";
-import styled from "styled-components";
-import { localstoragetext } from "../constants/localstorage-text";
-import { subscribeNotification } from "../functions/WebSocket";
-import logo from "../images/liteon-logo.png";
-import ReportProblemRoundedIcon from "@mui/icons-material/ReportProblemRounded";
-import Tooltip from "@mui/material/Tooltip";
-import buildpath from "../constants/route-path";
+import ApiIcon from "@mui/icons-material/Api";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import NotificationImportantIcon from "@mui/icons-material/NotificationImportant";
-import ApiIcon from "@mui/icons-material/Api";
-import { useAppDispatch } from "../redux/hook";
+import ReportProblemRoundedIcon from "@mui/icons-material/ReportProblemRounded";
+import Tooltip from "@mui/material/Tooltip";
+import { useCallback, useEffect, useState } from "react";
+import { Outlet, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import styled from "styled-components";
+import { localstoragetext } from "../constants/localstorage-text";
+import buildpath from "../constants/route-path";
+import { subscribeNotification } from "../functions/WebSocket";
+import logo from "../images/liteon-logo.png";
 import { getNotifications } from "../redux/actions/notificationActions";
+import { useAppDispatch } from "../redux/hook";
 import NotificationPopper from "./NotificationPopper";
 import UserPopper from "./UserPopper";
 
@@ -121,7 +122,7 @@ const Content = styled.div`
   z-index: 1;
   &.sticky-top {
     margin-top: 60px;
-    padding-bottom: 40px;
+    padding-bottom: 60px;
   }
 `;
 
@@ -146,6 +147,7 @@ function Home() {
       userid: localStorage.getItem(localstoragetext.userid),
       onReceive: (payload, type) => {
         console.debug("Received " + type + " notification. " + payload.message);
+        toast(payload.message, { type: "success" });
         retrieveData();
       },
     });

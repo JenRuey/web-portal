@@ -67,6 +67,7 @@ function StationLineChart({ data, chartLine }: StationLineChartType) {
     );
     let maxdate = moment(moment().format("yyyy-MM-DD"));
     let needed = _.filter(data, (o) => moment(o.date) >= mindate);
+
     let counterunit: "day" | "month" | "year" = "day";
     let feqformat = "DD MMM yyyy";
     if (feq === "m") {
@@ -103,9 +104,7 @@ function StationLineChart({ data, chartLine }: StationLineChartType) {
       }
 
       setChartData(valueArray);
-    } catch (err) {
-      console.debug(err);
-    }
+    } catch (err) {}
   }, [data, feq, dayInclude, chartLine]);
   return (
     <div className={"position-relative mt-3"}>
@@ -115,11 +114,16 @@ function StationLineChart({ data, chartLine }: StationLineChartType) {
           <Select
             value={dayInclude}
             label={"Past"}
-            onChange={(o) => setDayInclude(o.target.value as number)}
+            onChange={(o) => {
+              let dayinc = o.target.value as number;
+              setDayInclude(dayinc);
+            }}
           >
             <MenuItem value={7}>{"7 days"}</MenuItem>
             <MenuItem value={30}>{"30 days"}</MenuItem>
-            <MenuItem value={365}>{"365 days"}</MenuItem>
+            <MenuItem value={365} disabled={feq === "d"}>
+              {"365 days"}
+            </MenuItem>
           </Select>
         </FormControl>
         <FormControl className="ms-3">
@@ -127,16 +131,21 @@ function StationLineChart({ data, chartLine }: StationLineChartType) {
           <Select
             value={feq}
             label={"Frequency"}
-            onChange={(o) => setFeq(o.target.value)}
+            onChange={(o) => {
+              let fq = o.target.value;
+              setFeq(fq);
+            }}
           >
-            <MenuItem value={"d"}>{"Daily"}</MenuItem>
+            <MenuItem value={"d"} disabled={dayInclude === 365}>
+              {"Daily"}
+            </MenuItem>
             <MenuItem value={"m"}>{"Monthly"}</MenuItem>
             <MenuItem value={"y"}>{"Yearly"}</MenuItem>
           </Select>
         </FormControl>
       </div>
       <Paper>
-        <StyledChart data={chartData}>
+        <StyledChart data={chartData} key={JSON.stringify(chartData)}>
           <ArgumentAxis labelComponent={ArgumentLabel} />
           <ValueAxis labelComponent={ValueLabel} />
 

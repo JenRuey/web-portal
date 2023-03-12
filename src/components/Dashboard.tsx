@@ -75,9 +75,7 @@ function Dashboard() {
     let stompClient = subscribeTrend({
       accessToken: localStorage.getItem(localstoragetext.accesstoken),
       onReceive: (payload) => {
-        console.debug(
-          "Trend: " + payload.event_tagname + " : " + payload.value
-        );
+        console.debug("Trend: " + payload.event_tagname + "@" + payload.value);
         retrieveData();
       },
     });
@@ -166,11 +164,11 @@ function Dashboard() {
                   <div className={"flex-center flex-wrap"}>
                     <TitleBox
                       title={"Total Charged Energy"}
-                      value={trendinfo.totalChargedEnergy + "kWh"}
+                      value={trendinfo.totalChargedEnergy.toFixed(0) + "kWh"}
                     />
                     <TitleBox
                       title={"Total Revenue"}
-                      value={"SGD " + trendinfo.totalRevenue}
+                      value={"SGD " + trendinfo.totalRevenue.toFixed(4)}
                     />
                     <TitleBox
                       title={"Total Charged Sessions"}
@@ -206,7 +204,7 @@ function Dashboard() {
                                 (o) => o.event_tagname === evt.tagname
                               ),
                               (o) => moment(o.datetime)
-                            )[-1];
+                            ).slice(-1)[0];
                             return (
                               <div
                                 key={"accordion-loc-" + index + "-evt-" + kevt}

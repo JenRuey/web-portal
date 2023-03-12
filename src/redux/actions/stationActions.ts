@@ -1,5 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
+import axios from "../../AxiosConfig";
 import { LoadingEvent } from "../../components/Loading";
 
 type EventType = {
@@ -30,12 +30,15 @@ export interface StationInterface {
 export const getStationData = createAsyncThunk<StationInterface>(
   "station/data",
   async () => {
-    LoadingEvent.fire(true);
-    let resp = await axios.get(
-      process.env.REACT_APP_API_URL + "/auth-station/data"
-    );
-    LoadingEvent.fire(false);
+    try {
+      LoadingEvent.fire(true);
+      let resp = await axios.get(
+        process.env.REACT_APP_API_URL + "/auth-station/data"
+      );
 
-    return resp.data as StationInterface;
+      return resp.data as StationInterface;
+    } finally {
+      LoadingEvent.fire(false);
+    }
   }
 );

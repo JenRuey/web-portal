@@ -1,6 +1,6 @@
 export const localstoragetext = {
-  accesstoken: "ACCESS_TOKEN",
-  refreshtoken: "REFRESH_TOKEN",
-  useremail: "USER_EMAIL",
-  userid: "USER_ID",
+  accesstoken: "LITEON-TEST-ACCESS_TOKEN",
+  refreshtoken: "LITEON-TEST-REFRESH_TOKEN",
+  useremail: "LITEON-TEST-USER_EMAIL",
+  userid: "LITEON-TEST-USER_ID",
 };

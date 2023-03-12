@@ -227,7 +227,8 @@ export default function UserTable({ data }: EnhancedTableType) {
           return;
         }
       } else {
-        await dispatch(userEdit(editProfile));
+        let { type } = await dispatch(userEdit(editProfile));
+        if (type.includes("rejected")) return;
       }
     }
 
@@ -318,7 +319,7 @@ export default function UserTable({ data }: EnhancedTableType) {
                           wordWrap: "break-word",
                         }}
                       >
-                        {jwt_decode(row.access_token) ? (
+                        {row.access_token && jwt_decode(row.access_token) ? (
                           <div>
                             <div>
                               {"Subject : " +
@@ -341,7 +342,7 @@ export default function UserTable({ data }: EnhancedTableType) {
                             </div>
                           </div>
                         ) : (
-                          ""
+                          "-"
                         )}
                       </TableCell>
                       <TableCell
@@ -395,7 +396,9 @@ export default function UserTable({ data }: EnhancedTableType) {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">{"Modify User"}</DialogTitle>
+        <DialogTitle id="alert-dialog-title">
+          {addprofile ? "Add User" : "Modify User"}
+        </DialogTitle>
         <DialogContent>
           <FormControl variant="standard" className="w-100 mb-3">
             <InputLabel htmlFor="input-with-icon-adornment">
@@ -444,7 +447,9 @@ export default function UserTable({ data }: EnhancedTableType) {
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setEditOpen(false)}>{"Discard"}</Button>
-          <Button onClick={onDelete}>{"Remove this user"}</Button>
+          {!addprofile && (
+            <Button onClick={onDelete}>{"Remove this user"}</Button>
+          )}
           <Button onClick={onSave} autoFocus>
             {"Save"}
           </Button>

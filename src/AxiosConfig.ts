@@ -4,14 +4,17 @@ import { localstoragetext } from "./constants/localstorage-text";
 import buildpath from "./constants/route-path";
 import { logout } from "./functions/misc";
 
+const axiosInstance = axios.create();
+const axiosFresh = axios.create();
+
 // Add a request interceptor
-axios.interceptors.request.use(
+axiosInstance.interceptors.request.use(
   function (config) {
     const token =
       "Bearer " + localStorage.getItem(localstoragetext.accesstoken);
     config.headers.Authorization = token;
     // Do something before request is sent
-    console.debug(config);
+    console.debug("Request:" + config.url);
     return config;
   },
   function (error) {
@@ -27,15 +30,16 @@ axios.interceptors.request.use(
     // Do something with request error
     //return Promise.reject(error);
     toast(errormesssage, { type: "error" });
+    return Promise.reject(error);
   }
 );
 
 // Add a response interceptor
-axios.interceptors.response.use(
+axiosInstance.interceptors.response.use(
   function (response) {
     // Any status code that lie within the range of 2xx cause this function to trigger
     // Do something with response data
-    console.debug(response);
+    console.debug("Response:" + response.config.url);
     return response;
   },
   async function (error) {
@@ -55,9 +59,9 @@ axios.interceptors.response.use(
       originalRequest._retry = true;
       const access_token = await refreshAccessToken();
       if (access_token) {
-        axios.defaults.headers.common["Authorization"] =
+        axiosFresh.defaults.headers.common["Authorization"] =
           "Bearer " + access_token;
-        return axios(originalRequest);
+        return axiosFresh(originalRequest);
       } else {
         logout();
         window.location.href = buildpath.login;
@@ -65,6 +69,7 @@ axios.interceptors.response.use(
     }
 
     toast(errormesssage, { type: "error" });
+    return Promise.reject(error);
   }
 );
 
@@ -72,8 +77,10 @@ async function refreshAccessToken(): Promise<string | null> {
   let refreshtoken = localStorage.getItem(localstoragetext.refreshtoken);
   if (refreshtoken) {
     try {
-      let resp = await axios.get(
-        process.env.REACT_APP_API_URL + "/token/renew?token=" + refreshtoken
+      let resp = await axiosInstance.get(
+        process.env.REACT_APP_API_URL +
+          "/token/renew?token=" +
+          encodeURIComponent(refreshtoken)
       );
       localStorage.setItem(
         localstoragetext.accesstoken,
@@ -91,3 +98,5 @@ async function refreshAccessToken(): Promise<string | null> {
     return null;
   }
 }
+
+export default axiosInstance;

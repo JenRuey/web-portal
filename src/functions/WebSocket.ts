@@ -37,7 +37,6 @@ export function subscribeNotification({
       });
       return stompClient;
     } catch (err) {
-      console.debug(err);
       toast("Server Subscription failed.", { type: "error" });
       return null;
     }
@@ -68,7 +67,6 @@ export function subscribeTrend({
       });
       return stompClient;
     } catch (err) {
-      console.debug(err);
       toast("Server Subscription failed.", { type: "error" });
       return null;
     }

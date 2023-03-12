@@ -10,6 +10,7 @@ import {
   TimelineSeparator,
 } from "@mui/lab";
 import { Breadcrumbs, Grid, Link, Typography } from "@mui/material";
+import Card from "@mui/material/Card";
 import Tooltip from "@mui/material/Tooltip";
 import moment from "moment";
 import { useCallback, useEffect } from "react";
@@ -55,34 +56,40 @@ function Notification() {
       </Grid>
       <Grid item xs={12}>
         <Timeline>
-          {notifapp.data.map((item, index) => {
-            return (
-              <TimelineItem key={"msg-" + index}>
-                <TimelineOppositeContent color="text.secondary">
-                  <div>{moment(item.datetime).format("D MMM YYYY")}</div>
-                  <div>{moment(item.datetime).format("hh:mm A")}</div>
-                </TimelineOppositeContent>
-                <TimelineSeparator>
-                  <Tooltip title={item.user_id ? "private" : "public"}>
-                    <TimelineDot
-                      color={item.user_id ? "secondary" : "primary"}
-                      variant="outlined"
-                    >
-                      {item.user_id ? (
-                        <SecurityIcon color={"secondary"} />
-                      ) : (
-                        <PublicIcon htmlColor="#236bb3" />
-                      )}
-                    </TimelineDot>
-                  </Tooltip>
-                  <TimelineConnector />
-                </TimelineSeparator>
-                <TimelineContent>
-                  <div>{item.message}</div>
-                </TimelineContent>
-              </TimelineItem>
-            );
-          })}
+          {notifapp.data.length > 0 ? (
+            notifapp.data.map((item, index) => {
+              return (
+                <TimelineItem key={"msg-" + index}>
+                  <TimelineOppositeContent color="text.secondary">
+                    <div>{moment(item.datetime).format("D MMM YYYY")}</div>
+                    <div>{moment(item.datetime).format("hh:mm A")}</div>
+                  </TimelineOppositeContent>
+                  <TimelineSeparator>
+                    <Tooltip title={item.user_id ? "private" : "public"}>
+                      <TimelineDot
+                        color={item.user_id ? "secondary" : "primary"}
+                        variant="outlined"
+                      >
+                        {item.user_id ? (
+                          <SecurityIcon color={"secondary"} />
+                        ) : (
+                          <PublicIcon htmlColor="#236bb3" />
+                        )}
+                      </TimelineDot>
+                    </Tooltip>
+                    <TimelineConnector />
+                  </TimelineSeparator>
+                  <TimelineContent>
+                    <div>{item.message}</div>
+                  </TimelineContent>
+                </TimelineItem>
+              );
+            })
+          ) : (
+            <Card variant="outlined" className={"p-3"}>
+              {"No notification received yet."}
+            </Card>
+          )}
         </Timeline>
       </Grid>
     </Grid>

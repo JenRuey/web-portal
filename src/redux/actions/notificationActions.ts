@@ -1,5 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
+import axios from "../../AxiosConfig";
 import { LoadingEvent } from "../../components/Loading";
 
 export type NotificationType = {
@@ -13,11 +13,14 @@ export const getNotifications = createAsyncThunk<
   Array<NotificationType>
   // First argument to the payload creator
 >("notification/list", async () => {
-  LoadingEvent.fire(true);
-  let resp = await axios.get(
-    process.env.REACT_APP_API_URL + "/auth-notification/list"
-  );
-  LoadingEvent.fire(false);
+  try {
+    LoadingEvent.fire(true);
+    let resp = await axios.get(
+      process.env.REACT_APP_API_URL + "/auth-notification/list"
+    );
 
-  return resp.data as Array<NotificationType>;
+    return resp.data as Array<NotificationType>;
+  } finally {
+    LoadingEvent.fire(false);
+  }
 });

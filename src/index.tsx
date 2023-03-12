@@ -6,20 +6,20 @@ import { CssBaseline } from "@mui/material";
 import { ThemeProvider } from "@mui/material/styles";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import ReactDOM from "react-dom/client";
+import { Provider } from "react-redux";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import App from "./App";
-import "./AxiosConfig";
 import Loading from "./components/Loading";
 import "./index.css";
+import { store } from "./redux/store";
 import reportWebVitals from "./reportWebVitals";
 import theme from "./theme";
-import { Provider } from "react-redux";
-import { store } from "./redux/store";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
+
 root.render(
   <GoogleOAuthProvider
     clientId={process.env.REACT_APP_GOOGLE_WEB_CLIENT_ID || ""}

@@ -10,6 +10,7 @@ import {
 } from "@mui/material";
 import { TokenResponse, useGoogleLogin } from "@react-oauth/google";
 import { sha256 } from "js-sha256";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import styled from "styled-components";
@@ -135,6 +136,8 @@ function Login() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
+  const [showPass, setShowPass] = useState<boolean>(false);
+
   const handleAfterLogin = () => {
     navigate(buildpath.dashboard);
   };
@@ -156,10 +159,14 @@ function Login() {
       return;
     }
 
-    await dispatch(
-      login({ email: email.value, hash_key: sha256(password.value) })
+    let { type } = await dispatch(
+      login({
+        email: email.value,
+        hash_key: sha256(password.value),
+        errCallback: () => setShowPass(true),
+      })
     );
-    handleAfterLogin();
+    if (!type.includes("rejected")) handleAfterLogin();
   };
 
   const googleloginfunc = useGoogleLogin({
@@ -173,13 +180,13 @@ function Login() {
             return response.json();
           })
           .then(async (data) => {
-            await dispatch(
+            let { type } = await dispatch(
               googlelogin({
                 email: data.email,
                 access_token: resp.access_token,
               })
             );
-            handleAfterLogin();
+            if (!type.includes("rejected")) handleAfterLogin();
           });
       } else {
         toast("Failed to decode google credentials.", { type: "error" });
@@ -232,7 +239,7 @@ function Login() {
               required
               autoComplete="current-password"
               id="password"
-              type={"password"}
+              type={showPass ? "text" : "password"}
               startAdornment={
                 <InputAdornment position="start">
                   <LockIcon htmlColor="lightblue" fontSize="small" />

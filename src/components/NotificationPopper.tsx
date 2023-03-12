@@ -53,7 +53,9 @@ function NotificationPopper({
   const [open, setOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [counter, setCounter] = useState<number>(0);
-  const [previosread, setpreviosread] = useState<number | null>(null);
+  const [previosread, setpreviosread] = useState<number | null>(
+    notifapp.data.length
+  );
 
   const retrieveData = useCallback(async () => {
     await dispatch(getNotifications());
